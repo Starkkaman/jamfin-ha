@@ -1,0 +1,351 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Add a Jamfin TV",
+        "description": "Enter the address of the TV that runs Jamfin. Discovery (mDNS) does not cross subnets, so this is the usual way when Home Assistant and the TV are on different networks; give the TV a fixed address (DHCP reservation). Open Jamfin on the TV first: it shows a PIN when you submit.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "IP address or host name of the TV, for example 192.168.10.63.",
+          "port": "Jamfin's local API port (8095 unless it was taken on the TV)."
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Add {name}?",
+        "description": "Open Jamfin on {name} and keep it on screen. When you submit, the TV shows a 6-digit PIN."
+      },
+      "pin": {
+        "title": "Enter the PIN",
+        "description": "Type the 6-digit PIN that {name} shows. It is valid for 2 minutes and allows 3 tries.",
+        "data": {
+          "pin": "PIN"
+        }
+      },
+      "pairing_expired": {
+        "title": "Pairing ended",
+        "description": "The PIN on {name} expired or was cancelled (3 wrong tries, or Back on the TV). Keep Jamfin open on the TV and submit to show a new PIN."
+      },
+      "reauth_confirm": {
+        "title": "Pair {name} again",
+        "description": "{name} no longer accepts this Home Assistant's key (it was revoked in Jamfin, or Jamfin was reinstalled). Open Jamfin on the TV and submit to show a new PIN."
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to Jamfin on the TV. Check the address and that Jamfin is running.",
+      "unsupported_api": "This Jamfin speaks a different API version. Update Jamfin or this integration.",
+      "not_in_foreground": "Open Jamfin on the TV (it has to be on screen to show the PIN) and try again.",
+      "pairing_in_progress": "The TV is already showing a PIN for another pairing. Wait {retry_after} seconds and try again.",
+      "too_many_clients": "Five clients are already paired with this TV. Revoke one in Jamfin under Settings > Home Assistant.",
+      "rate_limited": "Too many pairing attempts. Pairing is locked; wait {retry_after} seconds and try again.",
+      "invalid_pin": "Wrong PIN. Tries left: {attempts_left}.",
+      "invalid_pin_format": "The PIN has 6 digits.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This TV is already configured",
+      "already_in_progress": "Configuration flow is already in progress",
+      "reauth_successful": "Re-authentication was successful",
+      "unique_id_mismatch": "This is a different TV than the one being paired.",
+      "cannot_connect": "Failed to connect to Jamfin on the TV.",
+      "invalid_discovery_info": "The discovered service is not a valid Jamfin TV.",
+      "unsupported_api": "This Jamfin speaks a different API version. Update Jamfin or this integration."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jamfin options",
+        "data": {
+          "media_player": "Media player"
+        },
+        "data_description": {
+          "media_player": "Add a media player for the TV. Off by default when the core Jellyfin integration is set up, because it already shows Jamfin's session as a media player."
+        }
+      }
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "preshow": "Pre-show started",
+      "movienight": "Movie night vote opened",
+      "movienight_winner": "Movie night winner picked",
+      "credits_started": "Credits started",
+      "next_up": "Next up shown",
+      "item_finished": "Item finished",
+      "segment_started": "Media segment started",
+      "chapter_changed": "Chapter changed",
+      "started_playing": "Started playing",
+      "paused": "Paused",
+      "resumed": "Resumed",
+      "stopped": "Stopped",
+      "turned_off": "Turned off (unreachable)"
+    },
+    "extra_fields": {
+      "kind": "Segment kind"
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "in_disc_menu": {
+        "name": "In disc menu"
+      }
+    },
+    "button": {
+      "skip_segment": {
+        "name": "Skip segment"
+      },
+      "next_chapter": {
+        "name": "Next chapter"
+      },
+      "previous_chapter": {
+        "name": "Previous chapter"
+      },
+      "go_home": {
+        "name": "Go home"
+      }
+    },
+    "event": {
+      "moments": {
+        "name": "Jamfin moments",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "preshow": "Pre-show started",
+              "movienight": "Movie night vote opened",
+              "movienight_winner": "Movie night winner picked",
+              "credits_started": "Credits started",
+              "next_up": "Next up shown",
+              "item_finished": "Item finished"
+            }
+          }
+        }
+      }
+    },
+    "image": {
+      "poster": {
+        "name": "Poster"
+      },
+      "backdrop": {
+        "name": "Backdrop"
+      },
+      "thumb": {
+        "name": "Thumbnail"
+      },
+      "logo": {
+        "name": "Logo"
+      },
+      "banner": {
+        "name": "Banner"
+      },
+      "chapter_image": {
+        "name": "Chapter image"
+      }
+    },
+    "select": {
+      "audio_track": {
+        "name": "Audio track"
+      },
+      "subtitle_track": {
+        "name": "Subtitles"
+      }
+    },
+    "sensor": {
+      "playback": {
+        "name": "Playback",
+        "state": {
+          "idle": "Idle",
+          "playing": "Playing",
+          "paused": "Paused",
+          "buffering": "Buffering",
+          "stopped": "Stopped"
+        },
+        "state_attributes": {
+          "private": {
+            "name": "Private"
+          },
+          "source": {
+            "name": "Source"
+          },
+          "app_state": {
+            "name": "App state"
+          },
+          "title": {
+            "name": "Title"
+          },
+          "kind": {
+            "name": "Kind"
+          },
+          "series": {
+            "name": "Series"
+          }
+        }
+      },
+      "profile": {
+        "name": "Profile",
+        "state_attributes": {
+          "profile_id": {
+            "name": "Profile ID"
+          },
+          "private": {
+            "name": "Private"
+          }
+        }
+      },
+      "media_kind": {
+        "name": "Media kind",
+        "state": {
+          "film": "Film",
+          "episode": "Episode",
+          "trailer": "Trailer",
+          "preshow": "Pre-show",
+          "none": "None",
+          "private": "Private"
+        }
+      },
+      "chapter": {
+        "name": "Chapter",
+        "state_attributes": {
+          "index": {
+            "name": "Index"
+          },
+          "start": {
+            "name": "Start"
+          },
+          "count": {
+            "name": "Count"
+          }
+        }
+      },
+      "segment": {
+        "name": "Segment",
+        "state": {
+          "intro": "Intro",
+          "recap": "Recap",
+          "credits": "Credits",
+          "preview": "Preview",
+          "commercial": "Commercial",
+          "none": "None"
+        },
+        "state_attributes": {
+          "start": {
+            "name": "Start"
+          },
+          "end": {
+            "name": "End"
+          },
+          "action": {
+            "name": "Action"
+          }
+        }
+      },
+      "film_colour": {
+        "name": "Film colour",
+        "state_attributes": {
+          "accent": {
+            "name": "Accent"
+          },
+          "palette": {
+            "name": "Palette"
+          },
+          "dominant_rgb": {
+            "name": "Dominant RGB"
+          },
+          "accent_rgb": {
+            "name": "Accent RGB"
+          },
+          "source": {
+            "name": "Source"
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "auth_failed": {
+      "message": "{name} refused this Home Assistant's key. Pair again."
+    },
+    "not_connected": {
+      "message": "{name} is not connected (the TV is off or Jamfin is not running)."
+    },
+    "command_not_in_foreground": {
+      "message": "Jamfin has to be on screen on {name} for this. Open Jamfin on the TV and try again."
+    },
+    "command_not_playing": {
+      "message": "Nothing is playing on {name}."
+    },
+    "command_unsupported": {
+      "message": "{command} is not possible on {name} right now (for example during the pre-show or on a disc)."
+    },
+    "command_not_available": {
+      "message": "{command} has nothing to act on right now on {name} (no such track, no segment to skip, or no chapters)."
+    },
+    "command_not_found": {
+      "message": "The Jellyfin item was not found for the active profile on {name}."
+    },
+    "command_no_profile": {
+      "message": "Pick a profile in Jamfin on {name} first."
+    },
+    "command_busy": {
+      "message": "{name} is busy (the player is starting or switching streams). Try again in a moment."
+    },
+    "command_rate_limited": {
+      "message": "Too many commands sent to {name}. Slow down."
+    },
+    "command_timeout": {
+      "message": "{name} did not answer {command} in time."
+    },
+    "command_internal": {
+      "message": "Jamfin on {name} hit an internal error running {command}."
+    },
+    "command_invalid_args": {
+      "message": "Invalid arguments for {command}: {message}"
+    },
+    "command_unknown_command": {
+      "message": "{name} does not offer {command}. Update Jamfin."
+    },
+    "command_failed": {
+      "message": "{command} failed on {name}: {code} {message}"
+    },
+    "unknown_track": {
+      "message": "Unknown track \"{option}\"."
+    }
+  },
+  "services": {
+    "play_item": {
+      "name": "Play item",
+      "description": "Plays a Jellyfin item in Jamfin on the TV. Jamfin has to be on screen. A disc (ISO / Blu-ray) item opens its film page instead.",
+      "fields": {
+        "config_entry_id": {
+          "name": "TV",
+          "description": "The Jamfin TV."
+        },
+        "jellyfin_item_id": {
+          "name": "Jellyfin item ID",
+          "description": "The item's Jellyfin ID (32 hex characters or a dashed UUID)."
+        },
+        "start_position": {
+          "name": "Start position",
+          "description": "Seconds from the start. Leave empty to resume where the profile stopped; 0 starts from the beginning."
+        }
+      }
+    },
+    "seek": {
+      "name": "Seek",
+      "description": "Seeks the open player on the TV.",
+      "fields": {
+        "config_entry_id": {
+          "name": "TV",
+          "description": "The Jamfin TV."
+        },
+        "position": {
+          "name": "Position",
+          "description": "Position in seconds."
+        }
+      }
+    }
+  }
+}

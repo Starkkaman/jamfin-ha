@@ -1,0 +1,5 @@
+# Tested 2026-11-12 with Python 3.14.
+# pytest-homeassistant-custom-component 0.13.375 pins homeassistant==2026.10.4
+# (newest release on PyPI that day; no 2026.11 build was published yet).
+pytest-homeassistant-custom-component==0.13.375
+ruff

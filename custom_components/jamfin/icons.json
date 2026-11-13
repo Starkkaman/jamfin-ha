@@ -1,0 +1,100 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "in_disc_menu": {
+        "default": "mdi:disc",
+        "state": {
+          "on": "mdi:disc-player"
+        }
+      }
+    },
+    "button": {
+      "skip_segment": {
+        "default": "mdi:skip-forward"
+      },
+      "next_chapter": {
+        "default": "mdi:skip-next"
+      },
+      "previous_chapter": {
+        "default": "mdi:skip-previous"
+      },
+      "go_home": {
+        "default": "mdi:home"
+      }
+    },
+    "event": {
+      "moments": {
+        "default": "mdi:movie-open-star"
+      }
+    },
+    "image": {
+      "poster": {
+        "default": "mdi:image"
+      },
+      "backdrop": {
+        "default": "mdi:image-area"
+      },
+      "thumb": {
+        "default": "mdi:image-outline"
+      },
+      "logo": {
+        "default": "mdi:format-title"
+      },
+      "banner": {
+        "default": "mdi:image-size-select-actual"
+      },
+      "chapter_image": {
+        "default": "mdi:bookmark-box-multiple"
+      }
+    },
+    "select": {
+      "audio_track": {
+        "default": "mdi:speaker"
+      },
+      "subtitle_track": {
+        "default": "mdi:subtitles"
+      }
+    },
+    "sensor": {
+      "playback": {
+        "default": "mdi:play-circle-outline",
+        "state": {
+          "playing": "mdi:play-circle",
+          "paused": "mdi:pause-circle",
+          "buffering": "mdi:progress-clock",
+          "stopped": "mdi:stop-circle",
+          "idle": "mdi:television"
+        }
+      },
+      "profile": {
+        "default": "mdi:account"
+      },
+      "media_kind": {
+        "default": "mdi:filmstrip",
+        "state": {
+          "episode": "mdi:television-classic",
+          "trailer": "mdi:movie-open-play",
+          "preshow": "mdi:popcorn",
+          "private": "mdi:eye-off"
+        }
+      },
+      "chapter": {
+        "default": "mdi:bookmark-outline"
+      },
+      "segment": {
+        "default": "mdi:debug-step-over"
+      },
+      "film_colour": {
+        "default": "mdi:palette"
+      }
+    }
+  },
+  "services": {
+    "play_item": {
+      "service": "mdi:play"
+    },
+    "seek": {
+      "service": "mdi:fast-forward"
+    }
+  }
+}

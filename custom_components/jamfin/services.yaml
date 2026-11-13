@@ -1,0 +1,35 @@
+play_item:
+  fields:
+    config_entry_id: &config_entry_id
+      required: true
+      selector:
+        config_entry:
+          integration: jamfin
+    jellyfin_item_id:
+      required: true
+      example: "4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f"
+      selector:
+        text:
+    start_position:
+      required: false
+      example: 0
+      selector:
+        number:
+          min: 0
+          max: 86400
+          step: 1
+          unit_of_measurement: s
+          mode: box
+seek:
+  fields:
+    config_entry_id: *config_entry_id
+    position:
+      required: true
+      example: 1834
+      selector:
+        number:
+          min: 0
+          max: 86400
+          step: 1
+          unit_of_measurement: s
+          mode: box

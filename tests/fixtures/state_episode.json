@@ -1,0 +1,82 @@
+{
+  "server_time": "2026-11-12T20:15:03.120Z",
+  "device": {
+    "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11",
+    "name": "Living Room TV",
+    "model": "SmartTV 4K FFM",
+    "app_version": "0.5.0-beta5"
+  },
+  "app": { "state": "foreground", "screen": "player" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "player": {
+    "state": "playing",
+    "source": "jellyfin",
+    "playback_rate": 1.0,
+    "in_disc_menu": null
+  },
+  "media": {
+    "kind": "episode",
+    "title": "Machine Learning",
+    "series": "Silo",
+    "season": 1,
+    "episode": 2,
+    "year": 2023,
+    "duration": 3184.512,
+    "position": 1834.0,
+    "position_updated_at": "2026-11-12T20:15:03.118Z",
+    "jellyfin_item_id": "4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f",
+    "jellyfin_series_id": "9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b",
+    "jellyfin_server_id": "0b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e",
+    "is_disc": false,
+    "preshow": null,
+    "images": {
+      "poster": {
+        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Primary?tag=3f2a9c&maxHeight=720",
+        "proxy": "/api/v1/art/poster/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
+      },
+      "backdrop": {
+        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Backdrop/0?tag=77ab01&maxHeight=1080",
+        "proxy": "/api/v1/art/backdrop/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
+      },
+      "thumb": {
+        "url": "http://192.168.10.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Primary?tag=c0ffee&maxHeight=540",
+        "proxy": "/api/v1/art/thumb/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f"
+      },
+      "logo": {
+        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Logo?tag=51de0a&maxHeight=360",
+        "proxy": "/api/v1/art/logo/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
+      },
+      "chapter": {
+        "url": "http://192.168.10.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Chapter/6?tag=aa31f0&maxHeight=360",
+        "proxy": "/api/v1/art/chapter/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f?index=6"
+      }
+    },
+    "colors": {
+      "dominant": "#1d2a2f",
+      "accent": "#c8a24a",
+      "palette": ["#1d2a2f", "#c8a24a", "#6e7f7a"],
+      "source": "poster"
+    }
+  },
+  "tracks": {
+    "audio": [
+      { "index": 1, "language": "eng", "title": "English - Dolby Digital+ - 5.1 - Default", "codec": "eac3", "channels": 6, "default": true, "forced": false, "commentary": false },
+      { "index": 2, "language": "ger", "title": "Deutsch - Dolby Digital+ - 5.1", "codec": "eac3", "channels": 6, "default": false, "forced": false, "commentary": false }
+    ],
+    "subtitle": [
+      { "index": 3, "language": "eng", "title": "English - SUBRIP", "codec": "subrip", "default": false, "forced": false, "hearing_impaired": false, "image": false },
+      { "index": 4, "language": "eng", "title": "English (Forced) - SUBRIP", "codec": "subrip", "default": false, "forced": true, "hearing_impaired": false, "image": false }
+    ],
+    "audio_selected": 1,
+    "subtitle_selected": null
+  },
+  "chapters": {
+    "list": [
+      { "start": 0.0, "name": "Opening" },
+      { "start": 312.4, "name": "Chapter 2" },
+      { "start": 1790.0, "name": "The Door" }
+    ],
+    "current": 2
+  },
+  "segment": null
+}

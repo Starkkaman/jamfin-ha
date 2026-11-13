@@ -1,0 +1,17 @@
+{
+  "server_time": "2026-11-12T20:58:41.000Z",
+  "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
+  "app": { "state": "foreground", "screen": "player" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "player": { "state": "playing", "source": "jellyfin", "playback_rate": 1.0, "in_disc_menu": null },
+  "media": {
+    "kind": "episode", "title": "Machine Learning", "series": "Silo", "season": 1, "episode": 2, "year": 2023,
+    "duration": 3184.512, "position": 3101.0, "position_updated_at": "2026-11-12T20:58:41.000Z",
+    "jellyfin_item_id": "4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f", "jellyfin_series_id": "9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b",
+    "jellyfin_server_id": "0b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e", "is_disc": false, "preshow": null,
+    "images": {}, "colors": null
+  },
+  "tracks": null,
+  "chapters": null,
+  "segment": { "kind": "credits", "start": 3101.0, "end": 3184.5, "action": "ask" }
+}

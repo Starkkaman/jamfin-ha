@@ -1,0 +1,17 @@
+{
+  "server_time": "2026-11-12T21:00:00.000Z",
+  "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
+  "app": { "state": "foreground", "screen": "disc" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "player": { "state": "unknown", "source": "disc", "playback_rate": 1.0, "in_disc_menu": null },
+  "media": {
+    "kind": "film", "title": "Army of Darkness", "series": null, "season": null, "episode": null, "year": 1992,
+    "duration": null, "position": null, "position_updated_at": null,
+    "jellyfin_item_id": "a0b1c2d3e4f5061728394a5b6c7d8e9f", "jellyfin_series_id": null,
+    "jellyfin_server_id": "0b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e", "is_disc": true, "preshow": null,
+    "images": { "poster": { "url": "http://192.168.10.157:8096/Items/a0b1c2d3e4f5061728394a5b6c7d8e9f/Images/Primary?tag=d15c00&maxHeight=720",
+                            "proxy": "/api/v1/art/poster/a0b1c2d3e4f5061728394a5b6c7d8e9f" } },
+    "colors": { "dominant": "#2b1a12", "accent": "#d94f1e", "palette": ["#2b1a12", "#d94f1e", "#8c7a5b"], "source": "poster" }
+  },
+  "tracks": null, "chapters": null, "segment": null
+}

@@ -1,0 +1,21 @@
+{
+  "type": "hello",
+  "api": 1,
+  "server_time": "2026-11-12T20:15:00.004Z",
+  "client_id": "c_7hq2w9",
+  "device": {
+    "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11",
+    "name": "Living Room TV",
+    "model": "SmartTV 4K FFM",
+    "app_version": "0.5.0-beta5"
+  },
+  "capabilities": {
+    "commands": ["play", "pause", "toggle", "stop", "seek", "next_chapter", "previous_chapter",
+                 "skip_segment", "set_audio_track", "set_subtitle_track", "play_media", "go_home"],
+    "events": ["preshow", "movienight", "movienight_winner", "credits_started", "item_finished",
+               "next_up", "chapter_changed", "segment_started"],
+    "features": ["images", "colors"]
+  },
+  "heartbeat": { "ping_interval": 20, "pong_timeout": 10, "idle_timeout": 60 },
+  "limits": { "max_message_bytes": 16384, "commands_per_second": 10 }
+}

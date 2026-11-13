@@ -1,0 +1,8 @@
+{
+  "server_time": "2026-11-12T21:40:00.000Z",
+  "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
+  "app": { "state": "foreground", "screen": "player" },
+  "profile": "private",
+  "player": { "state": "playing", "source": "jellyfin", "playback_rate": 1.0, "in_disc_menu": null },
+  "media": null, "tracks": null, "chapters": null, "segment": null
+}
