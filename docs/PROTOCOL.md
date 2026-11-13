@@ -410,13 +410,13 @@ show a problem, patches can be added as a v1 feature (`features: ["patches"]`).
 
 | Code | Meaning | Client action |
 |---|---|---|
-| 1000 | Normal close (client unpaired) | none |
+| 1000 | Normal close | none |
 | 1001 | Jamfin is shutting the server down (process ending, server disabled) | reconnect with backoff |
 | 1003 | Binary frame | fix the client |
 | 1009 | Message too big | fix the client |
 | 4000 | Replaced: the same client opened a newer socket | don't reconnect this one |
 | 4002 | Idle timeout (no ping) | reconnect |
-| 4401 | Key revoked or unknown | stop, start reauth |
+| 4401 | Key revoked or unknown (also after the client unpairs itself, §5.5) | stop, start reauth (not after its own unpair) |
 | 4429 | Too many sockets / rate limit | reconnect after backoff |
 
 One socket per client key: a new socket with the same key closes the older one with 4000.
