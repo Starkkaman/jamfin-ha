@@ -1,7 +1,9 @@
 # Jamfin local API, v1 (spec draft)
 
 The contract between **Jamfin TV** (the server, running on the TV) and the Home Assistant custom integration
-**`jamfin`** (the client, repo `jamfin-ha`). Status: **draft, 2026-11-12**. Nothing is implemented yet.
+**`jamfin`** (the client, repo `jamfin-ha`). Status: **draft, 2026-11-12**, with the JamFin Agent's review
+answers folded in the same day (Q2 privacy, Q3 TLS, Q4 background commands, Q5 foreground service, Q11 colours are
+closed, see section 17).
 
 Agreed between the JamFin Agent and the Home Assistant session; additions from Isaac (images, colours) included.
 Where this draft decides something the brief left open, it says so under **Decision** with the reason.
@@ -91,7 +93,7 @@ router. Manual host entry (section 5.1 `GET /api/v1/info`) is therefore a first-
 
 ## 3. Transport, conventions, errors
 
-- Plain HTTP/1.1 and WebSocket (RFC 6455) on the LAN, no TLS in v1 (see section 12 and open question Q3).
+- Plain HTTP/1.1 and WebSocket (RFC 6455) on the LAN, no TLS in v1 (decided, section 12; Q3 closed).
 - All bodies are UTF-8 JSON (`Content-Type: application/json`), except art (images).
 - Field names `snake_case`. Unknown fields MUST be ignored by both sides.
 - **Times** (positions, durations, chapter starts) are **seconds** as JSON numbers with up to 3 decimals
@@ -521,7 +523,8 @@ One socket per client key: a new socket with the same key closes the older one w
   `disc` | `settings` | `other` | `null` (background).
 
 **`profile`**: `{id, name}` = the active Jellyfin user's id and display name; `null` while the profile picker or
-sign-in shows, or before a profile is picked.
+sign-in shows, or before a profile is picked; the **string `"private"`** when the active profile has "Tell Home
+Assistant what's playing" off (section 7.7). Clients MUST accept all three forms.
 
 **`player`** (always):
 - `state`: `idle` | `playing` | `paused` | `buffering` | `stopped` | `unknown`.
@@ -536,7 +539,7 @@ sign-in shows, or before a profile is picked.
 - `playback_rate`: one of `PlaybackSpeed.OPTIONS` (0.5, 0.75, 1, 1.25, 1.5, 2); 1 when nothing plays.
 - `in_disc_menu`: `true` / `false` while a disc plays (beta 5b), else `null`. **Absent before 5b.**
 
-**`media`**: `null` when `player.state` is `idle`.
+**`media`**: `null` when `player.state` is `idle`, and always `null` for a private profile (section 7.7).
 - `kind`: `film` | `episode` | `trailer` (a local trailer or extra played in Jamfin's player) | `preshow` (an item
   of the pre-show queue).
 - `title` (episode title for episodes), `series`, `season`, `episode` (episodes only, else `null`), `year`.
@@ -639,13 +642,15 @@ An object keyed by kind; **a kind is absent when the item has no such image**. E
 { "dominant": "#1d2a2f", "accent": "#c8a24a", "palette": ["#1d2a2f", "#c8a24a", "#6e7f7a"], "source": "poster" }
 ```
 
-- Computed **on the TV** from the art (Jamfin's existing poster "set" palette, see open question Q11) once per item,
-  cached by image tag, and sent in the **same state push as `images`** (Jamfin may hold the item's first `state`
-  up to 500 ms for it; if it isn't ready then, `colors` is `null` and follows in a later push).
-- `dominant`: the most present colour; `accent`: the most vivid usable colour (good for tinting a light); `palette`:
-  3..5 colours, most present first. All `#rrggbb` lower-case.
-- `source`: which art they came from: `poster` | `thumb` | `backdrop`. Episodes use the **series** art, unless the
-  episode still gives a better result (Jamfin's rule: e.g. the series poster is near-greyscale); then `thumb`.
+- Computed **on the TV** (beta 5) with **`androidx.palette`** on the poster bitmap, **off the main thread**, once per
+  item and **cached per item id**, and sent in the **same state push as `images`** (Jamfin may hold the item's first
+  `state` up to 500 ms for it; if it isn't ready then, `colors` is `null` and follows in a later push). Q11 closed.
+- `dominant`: Palette's dominant colour (the most present); `accent`: the most vivid usable colour Palette finds
+  (good for tinting a light); `palette`: the 3 colours Jamfin takes from Palette (`palette[3]`), most present
+  first. All `#rrggbb` lower-case. The schema is unchanged: clients MUST still accept 3..5 entries.
+- `source`: which art they came from: `poster` | `thumb` | `backdrop`. Films use their poster. Episodes use the
+  **series poster**, unless the episode still has **stronger colour** (Jamfin's rule); then the still's colours are
+  sent with `source: "thumb"`.
 - During the pre-show: the film's colours (section 7.3). `null` when there is no art.
 - Intended use: HA automations tint lights to the film (example in HA-INTEGRATION.md).
 
@@ -658,10 +663,32 @@ refresh it from each `pong.server_time`) and add it to `position_updated_at` bef
 ### 7.7 Privacy per profile
 
 Beta 4 has a per-profile switch "Tell Home Assistant what's playing" (`tell_room_<userId>`, off by default).
-**Proposal:** it keeps meaning the same thing here. With it off for the active profile, `player.state`,
-`app` and `profile` are still sent (lights can still follow play/pause), but `media`, `tracks`, `chapters` and
-`segment` are `null` and no events fire except `item_finished` without a payload. Commands keep working.
-See open question Q2.
+**Decided (JamFin Agent review, Q2 closed):** the switch is **per profile** and keeps meaning the same thing here.
+Pairing a client does not imply consent for every profile.
+
+- **Switch ON** for the active profile: everything in this document is sent.
+- **Switch OFF** for the active profile ("private"):
+  - `player` (incl. `state`, `source`, `playback_rate`) and `app` are still sent, so lights can still follow
+    play/pause/stop.
+  - `profile` is the string `"private"` (no id, no name).
+  - `media` is `null`: no title, ids, `images` or `colors`. `tracks`, `chapters` and `segment` are `null` too
+    (they describe the item).
+  - **No events** at all (no moments, no `segment_started` / `chapter_changed`): only `state` changes are pushed.
+  - The art proxy serves nothing for items played while private (they never appear in `media.images`).
+  - Commands keep working (section 9).
+- Home Assistant shows such a state as e.g. **"Playing (private)"**: the playback state stays usable for
+  automations, every media detail is cleared.
+
+```json
+{
+  "server_time": "2026-11-12T21:40:00.000Z",
+  "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
+  "app": { "state": "foreground", "screen": "player" },
+  "profile": "private",
+  "player": { "state": "playing", "source": "jellyfin", "playback_rate": 1.0, "in_disc_menu": null },
+  "media": null, "tracks": null, "chapters": null, "segment": null
+}
+```
 
 ---
 
@@ -680,6 +707,7 @@ See open question Q2.
 - `at`: server time the moment happened. `data` always has `jellyfin_item_id` when an item is involved.
 - Events are not repeated on reconnect (the snapshot carries the state; a missed moment is gone).
 - Clients MUST ignore unknown `event` values.
+- **No events fire while the active profile is private** (section 7.7); only `state` pushes continue.
 
 | Event | When | HA mapping |
 |---|---|---|
@@ -832,6 +860,12 @@ command within **10 s** (`timeout` otherwise); clients SHOULD time out after 15 
 
 All player commands answer `not_playing` without an open player (Jellyfin player, pre-show, or disc after 5b).
 
+**Foreground rule (decided, Q4 closed).** The player commands (`play`, `pause`, `toggle`, `stop`, `seek`,
+`next_chapter`, `previous_chapter`, `skip_segment`, `set_audio_track`, `set_subtitle_track`) work whenever a player
+is up. `play_media` and `go_home` start an activity and therefore only work while Jamfin is **in the foreground**
+(`app.state: foreground`); otherwise they fail with `not_in_foreground` (no `SYSTEM_ALERT_WINDOW` exemption, no
+notification trampoline). State pushes continue while the process lives, foreground or background.
+
 | Command | args | Result `data` | Errors besides `not_playing` |
 |---|---|---|---|
 | `play` | - | `{state}` | `busy` |
@@ -878,9 +912,10 @@ Details:
   - Series / season ids: `invalid_args` in beta 5 (open question Q9: "play next up of a series").
   - `jellyfin_server_id`: optional; if given and it isn't a server of the active profile: `not_found`.
   - The result comes when the player screen has opened, not at the first frame (state follows).
-  - With Jamfin in the background: `not_in_foreground` (open question Q4).
+  - With Jamfin in the background: `not_in_foreground` (foreground rule above).
   - Never runs the pre-show (it's "Play", not "Play with pre-show").
-- **`go_home`**: `GoHome` (pop to Main, Home section). Closes an open player like HOME inside the app does.
+- **`go_home`**: `GoHome` (pop to Main, Home section). Closes an open player like HOME inside the app does. With
+  Jamfin in the background: `not_in_foreground`.
 
 Later (not in v1's beta 5 list, reserved names): `open_item` (`DisplayContent`: open an item's page),
 `play_preshow` (the film with its pre-show). **Volume is not Jamfin's** (the TV / Control Freak own it) and will not
@@ -915,7 +950,8 @@ be added here.
 - **TV standby**: Android may freeze or keep the process and suspend Wi-Fi/Ethernet; either way the heartbeat
   times the socket out. On wake, Jamfin re-registers NSD (also on every network change, `NetworkWatch`).
 - **Idle sockets** are closed after 60 s without client messages (section 6.3).
-- **No foreground service** in beta 5: Jamfin does not keep itself alive for HA. Open question Q5.
+- **No foreground service** (decided, Q5 closed): Jamfin does not keep itself alive for HA. When Android kills the
+  process in the background, HA shows the TV as off until Jamfin starts again.
 - The server can be turned off in Jamfin Settings > Home Assistant (then: no NSD, port closed, close 1001).
 
 ---
@@ -964,8 +1000,10 @@ Fields absent or `null` until 5b are marked "(5b)" in section 7.
 - **Size limits:** request line + headers 8 KB; HTTP bodies 4 KB; client WebSocket messages 16 KB (close 1009
   above); server state messages bounded by caps (chapters 200, tracks 64 per list, strings 200 chars) to well under
   256 KB.
-- **No TLS in v1.** A device on the LAN that can sniff traffic can read the client key and the state. Accepted for
-  v1 (the same LAN already carries Jellyfin over HTTP); see open question Q3.
+- **No TLS in v1 (decided, Q3 closed).** Plain `ws://` on the LAN, protected by the Bearer client key and the
+  LAN-only source check above. A device on the LAN that can sniff traffic can read the client key and the state:
+  the same exposure as Jellyfin's own plain HTTP on that LAN, accepted for v1. A pinned self-signed certificate
+  can be added later as a v1 feature without breaking clients.
 - **Timeouts:** 10 s to receive a request's headers; slow-loris peers are dropped.
 - The art proxy only serves recently shown items (section 7.4); `/info` exposes no profile or media.
 - Pairing needs a person at the TV (the PIN), and Jamfin in the foreground.
@@ -1066,15 +1104,17 @@ sequenceDiagram
 1. **Jamfin server implementation.** OkHttp has no server side; candidates: a small hand-written HTTP + RFC 6455
    server on `ServerSocket` (like `VoteServer`/`HaPairServer`), Ktor server CIO, or Java-WebSocket. Size, 32-bit ARM
    and maintenance decide (JamFin Agent).
-2. **Per-profile privacy.** Does "Tell Home Assistant what's playing" keep gating detail (proposal in 7.7), or does
-   pairing a client imply consent for every profile? Who decides for other household profiles (Amber, Marissa)?
-3. **TLS.** Self-signed certificate with its SHA-256 fingerprint returned at pairing and pinned by HA (and in TXT
-   `fp`)? Would protect the key and state from LAN sniffing; costs complexity on both sides.
-4. **Commands from the background.** `play_media` / `go_home` can't start an activity from the background on
-   Android 10+. Options: the `SYSTEM_ALERT_WINDOW` exemption (grantable by adb `appops` on the TV), a notification
-   trampoline, or accept `not_in_foreground`. Same for pairing (PIN needs the screen).
-5. **Keeping the server alive.** No foreground service in beta 5, so HA shows off whenever Android kills Jamfin in
-   the background (the TV swaps heavily). Is a foreground service (with its notification) wanted on the TV?
+2. ~~**Per-profile privacy.**~~ **Closed 2026-11-12 (JamFin Agent).** Per profile: with "Tell Home Assistant
+   what's playing" off, the state keeps `player.state` but sends `media: null` (no `images` / `colors`),
+   `profile: "private"` and no events; HA shows "Playing (private)". On = everything. Section 7.7.
+3. ~~**TLS.**~~ **Closed 2026-11-12 (JamFin Agent).** Plain `ws://` on the LAN + Bearer key + LAN-only source check,
+   documented as the same exposure as Jellyfin's plain HTTP. No certificate pinning in v1. Section 12.
+4. ~~**Commands from the background.**~~ **Closed 2026-11-12 (JamFin Agent).** Player commands (pause, play, seek,
+   chapters, segment, tracks) work while a player is up; `play_media` and `go_home` only with Jamfin in the
+   foreground, otherwise `not_in_foreground`. State pushes continue while the process lives. Pairing still needs
+   the foreground (the PIN needs the screen). Section 9.3. (The review answer wrote the code as `not_foreground`;
+   this spec keeps the already defined `not_in_foreground`, and jamfin-ha accepts both.)
+5. ~~**Keeping the server alive.**~~ **Closed 2026-11-12 (JamFin Agent).** No foreground service. Section 10.2.
 6. **PIN presentation.** Where/how the TV shows the PIN (over playback? only in Settings?) is a Jamfin design call.
 7. **Cross-subnet discovery.** HA and the TV are on different subnets in Isaac's network: install an mDNS reflector
    (router/Avahi), or rely on manual host + DHCP reservation for the TV (192.168.10.63)?
@@ -1082,10 +1122,9 @@ sequenceDiagram
    not Jellyfin stream indexes.
 9. **`play_media` for series/seasons**: play next up / resume of a series? (beta 5: `invalid_args`.)
 10. **When does the beta 4 outbound link go away**, and do the in-app scene pickers stay once jamfin-ha exists?
-11. **Colour source.** Isaac refers to Jamfin's existing poster "set" palette; no dominant/accent extractor was found
-    on branch `mobile` (2026-11-12). The JamFin Agent should name the function (or add one, e.g. androidx.palette)
-    and its rules for `accent` (minimum saturation/brightness so it tints a light usefully) and "episode still is
-    better".
+11. ~~**Colour source.**~~ **Closed 2026-11-12 (JamFin Agent).** Beta 5 computes the colours with `androidx.palette`
+    on the poster bitmap, off the main thread, cached per item id: dominant, accent, `palette` of 3. Episodes use the
+    series poster unless the episode still has stronger colour (`source: "thumb"`). Schema unchanged. Section 7.5.
 12. **Stable device id across reinstalls.** TXT `id` is regenerated on a reinstall (app data wiped), so HA sees a new
     device. Acceptable, or derive it from something that survives (e.g. a hash of `ANDROID_ID` + package)?
 13. **`stopped` → `idle`.** Should `stopped` fall back to `idle` (media cleared) after some time or when the app
