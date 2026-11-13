@@ -31,5 +31,5 @@ async def test_diagnostics(
     assert "colors" in result["connection"]["capabilities"]["features"]
     assert result["hello"]["type"] == "hello"
     assert result["state"]["profile"] == {"id": REDACTED, "name": REDACTED}
-    assert "Isaac" not in str(result)
+    assert "Alex" not in str(result)
     assert result["state"]["media"]["title"] == "Machine Learning"

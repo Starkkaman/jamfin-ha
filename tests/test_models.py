@@ -25,7 +25,7 @@ from .fake_jamfin import load_json
 def test_episode_parses() -> None:
     state = JamfinState.from_dict(load_json("state_episode.json"))
     assert state.player_state == "playing"
-    assert state.profile_name == "Isaac"
+    assert state.profile_name == "Alex"
     assert state.private is False
     assert state.media is not None
     assert state.media.kind == "episode"

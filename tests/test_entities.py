@@ -74,7 +74,7 @@ async def test_episode(hass: HomeAssistant) -> None:
     assert playback.attributes["app_state"] == "foreground"
 
     profile = hass.states.get(PROFILE)
-    assert profile.state == "Isaac"
+    assert profile.state == "Alex"
     assert profile.attributes["profile_id"] == "a1b2c3d4e5f60718293a4b5c6d7e8f90"
 
     assert state_of(hass, KIND) == "episode"

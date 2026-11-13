@@ -21,7 +21,7 @@ from aiohttp import WSMsgType, web
 from aiohttp.test_utils import TestServer
 
 FIXTURES = Path(__file__).parent / "fixtures"
-JELLYFIN_IN_FIXTURES = "http://192.168.10.157:8096"
+JELLYFIN_IN_FIXTURES = "http://192.168.20.157:8096"
 PNG = b"\x89PNG\r\n\x1a\n" + b"fake-proxied-art"
 JPEG = b"\xff\xd8\xff\xe0" + b"fake-direct-art"
 DEVICE_ID = "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11"

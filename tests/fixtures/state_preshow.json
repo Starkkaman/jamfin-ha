@@ -2,7 +2,7 @@
   "server_time": "2026-11-12T20:01:02.100Z",
   "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
   "app": { "state": "foreground", "screen": "preshow" },
-  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Alex" },
   "player": { "state": "playing", "source": "preshow", "playback_rate": 1.0, "in_disc_menu": null },
   "media": {
     "kind": "preshow", "title": "Cartoon Network bumper 1998", "series": null, "season": null, "episode": null,
@@ -11,7 +11,7 @@
     "jellyfin_server_id": "0b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e", "is_disc": false,
     "preshow": { "slot": "commercial", "index": 2, "count": 5,
                  "film": { "jellyfin_item_id": "5d6e7f8091a2b3c4d5e6f708192a3b4c", "title": "Galaxy Quest", "year": 1999 } },
-    "images": { "poster": { "url": "http://192.168.10.157:8096/Items/5d6e7f8091a2b3c4d5e6f708192a3b4c/Images/Primary?tag=9a8b7c&maxHeight=720",
+    "images": { "poster": { "url": "http://192.168.20.157:8096/Items/5d6e7f8091a2b3c4d5e6f708192a3b4c/Images/Primary?tag=9a8b7c&maxHeight=720",
                             "proxy": "/api/v1/art/poster/5d6e7f8091a2b3c4d5e6f708192a3b4c" } },
     "colors": { "dominant": "#0f1c3a", "accent": "#e8b23a", "palette": ["#0f1c3a", "#e8b23a", "#9a3b2c"], "source": "poster" }
   },

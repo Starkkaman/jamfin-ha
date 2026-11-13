@@ -72,7 +72,7 @@ Example (as `avahi-browse -r` would show it):
 ```
 = eth0 IPv4 Living Room TV  _jamfin._tcp  local
    hostname = [Android-3.local]
-   address = [192.168.10.63]
+   address = [192.168.20.63]
    port = [8095]
    txt = ["api=1" "version=0.5.0-beta5" "name=Living Room TV" "id=6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11"]
 ```
@@ -85,8 +85,8 @@ Example (as `avahi-browse -r` would show it):
 **Clients:** the unique id of a TV is TXT `id`. Host and port are only a current address: when a known `id` shows up
 on another host/port, the client updates its stored address (HA: `_abort_if_unique_id_configured(updates=...)`).
 
-**Discovery does not cross subnets.** mDNS is link-local multicast. In Isaac's network HA (192.168.5.166) and the TV
-(192.168.10.63) are on different routed subnets, so zeroconf discovery only works with an mDNS reflector on the
+**Discovery does not cross subnets.** mDNS is link-local multicast. In a split home network HA (192.168.1.10) and the TV
+(192.168.20.63) are on different routed subnets, so zeroconf discovery only works with an mDNS reflector on the
 router. Manual host entry (section 5.1 `GET /api/v1/info`) is therefore a first-class path, not a fallback.
 
 ---
@@ -437,7 +437,7 @@ One socket per client key: a new socket with the same key closes the older one w
     "app_version": "0.5.0-beta5"
   },
   "app": { "state": "foreground", "screen": "player" },
-  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Alex" },
   "player": {
     "state": "playing",
     "source": "jellyfin",
@@ -461,23 +461,23 @@ One socket per client key: a new socket with the same key closes the older one w
     "preshow": null,
     "images": {
       "poster": {
-        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Primary?tag=3f2a9c&maxHeight=720",
+        "url": "http://192.168.20.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Primary?tag=3f2a9c&maxHeight=720",
         "proxy": "/api/v1/art/poster/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
       },
       "backdrop": {
-        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Backdrop/0?tag=77ab01&maxHeight=1080",
+        "url": "http://192.168.20.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Backdrop/0?tag=77ab01&maxHeight=1080",
         "proxy": "/api/v1/art/backdrop/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
       },
       "thumb": {
-        "url": "http://192.168.10.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Primary?tag=c0ffee&maxHeight=540",
+        "url": "http://192.168.20.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Primary?tag=c0ffee&maxHeight=540",
         "proxy": "/api/v1/art/thumb/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f"
       },
       "logo": {
-        "url": "http://192.168.10.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Logo?tag=51de0a&maxHeight=360",
+        "url": "http://192.168.20.157:8096/Items/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b/Images/Logo?tag=51de0a&maxHeight=360",
         "proxy": "/api/v1/art/logo/9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b"
       },
       "chapter": {
-        "url": "http://192.168.10.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Chapter/6?tag=aa31f0&maxHeight=360",
+        "url": "http://192.168.20.157:8096/Items/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f/Images/Chapter/6?tag=aa31f0&maxHeight=360",
         "proxy": "/api/v1/art/chapter/4f1c2d3e4a5b6c7d8e9f0a1b2c3d4e5f?index=6"
       }
     },
@@ -583,7 +583,7 @@ Idle on home:
   "server_time": "2026-11-12T19:02:11.500Z",
   "device": { "id": "6f1d0c52-6b3e-4f6e-9a54-2d1f0a7c9e11", "name": "Living Room TV", "model": "SmartTV 4K FFM", "app_version": "0.5.0-beta5" },
   "app": { "state": "foreground", "screen": "home" },
-  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Isaac" },
+  "profile": { "id": "a1b2c3d4e5f60718293a4b5c6d7e8f90", "name": "Alex" },
   "player": { "state": "idle", "source": null, "playback_rate": 1.0, "in_disc_menu": null },
   "media": null, "tracks": null, "chapters": null, "segment": null
 }
@@ -983,7 +983,7 @@ Fields absent or `null` until 5b are marked "(5b)" in section 7.
 
 - **LAN only.** The server answers only peers whose source address is loopback, RFC 1918 private IPv4, link-local,
   or IPv6 ULA (`fc00::/7`), the same check as `VoteServer.isLan` / `HaPairServer`. Other peers are disconnected
-  without a reply. This accepts **routed private subnets** (HA on 192.168.5.x, TV on 192.168.10.x), on purpose.
+  without a reply. This accepts **routed private subnets** (HA on 192.168.1.x, TV on 192.168.20.x), on purpose.
 - **No tokens in URLs.** The client key travels only in the `Authorization` header; a `key`/`token`/`api_key`
   query parameter is rejected. Image URLs in `media.images` never contain the Jellyfin token; the proxy keeps the
   token on the TV. The Jellyfin token is never part of any message.
@@ -1116,8 +1116,8 @@ sequenceDiagram
    this spec keeps the already defined `not_in_foreground`, and jamfin-ha accepts both.)
 5. ~~**Keeping the server alive.**~~ **Closed 2026-11-12 (JamFin Agent).** No foreground service. Section 10.2.
 6. **PIN presentation.** Where/how the TV shows the PIN (over playback? only in Settings?) is a Jamfin design call.
-7. **Cross-subnet discovery.** HA and the TV are on different subnets in Isaac's network: install an mDNS reflector
-   (router/Avahi), or rely on manual host + DHCP reservation for the TV (192.168.10.63)?
+7. **Cross-subnet discovery.** HA and the TV are on different subnets in some home networks: install an mDNS reflector
+   (router/Avahi), or rely on manual host + DHCP reservation for the TV (192.168.20.63)?
 8. **Disc track indexes (5b+).** If disc tracks are relayed later, they need their own numbering (`source: disc`),
    not Jellyfin stream indexes.
 9. **`play_media` for series/seasons**: play next up / resume of a series? (beta 5: `invalid_args`.)

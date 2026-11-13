@@ -35,8 +35,8 @@ No extra Python packages: the integration uses only aiohttp and zeroconf, which 
 2. In Home Assistant: **Settings > Devices & services**.
    - If the TV was discovered (zeroconf `_jamfin._tcp`), click **Add** on the discovered "Living Room TV" card and
      confirm. Only then does the TV show a PIN.
-   - Otherwise **Add integration > Jamfin** and enter the TV's address, for example `192.168.10.63`, port `8095`.
-     **Discovery (mDNS) does not cross subnets**: at home Home Assistant (192.168.5.x) and the TV (192.168.10.x) are
+   - Otherwise **Add integration > Jamfin** and enter the TV's address, for example `192.168.20.63`, port `8095`.
+     **Discovery (mDNS) does not cross subnets**: on a split network Home Assistant (192.168.1.x) and the TV (192.168.20.x) are
      on different subnets, so manual entry is the normal path unless the router reflects mDNS. Give the TV a DHCP
      reservation so its address stays put.
 3. Type the **6-digit PIN** the TV shows. It is valid for 2 minutes and allows 3 tries; after that ask for a new PIN.

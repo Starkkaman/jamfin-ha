@@ -29,7 +29,7 @@ hacs.json  README.md  docs/
   Check TXT `api` (must include 1). Confirm step "Add Living Room TV?" → `pair/start` only after the user confirms,
   so the TV shows a PIN only when someone is at HA.
 - **Manual** (`async_step_user`): host + port (default 8095) → `GET /api/v1/info` → unique id from `id`. Needed
-  because zeroconf doesn't cross subnets (HA 192.168.5.x, TV 192.168.10.x).
+  because zeroconf doesn't cross subnets (HA 192.168.1.x, TV 192.168.20.x).
 - **PIN step** (`async_step_pin`): `pair/start` with `client_name` = "Home Assistant (<location name>)" and
   `client_instance` = HA's instance id; show errors from the error codes (`not_in_foreground` → "Open Jamfin on the
   TV", `pairing_in_progress`, `too_many_clients`, `invalid_pin` with tries left, `pairing_expired` → start again,
