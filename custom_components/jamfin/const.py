@@ -68,6 +68,10 @@ BACKOFF_STEPS: Final = (1.0, 2.0, 4.0, 8.0, 16.0, 30.0, 60.0)
 BACKOFF_JITTER: Final = 0.2
 BACKOFF_RESET_AFTER: Final = 60.0
 RESOLVE_AFTER_FAILURES: Final = 3
+# Close 4000 ("replaced"): usually our own reconnect racing the old socket, or an app restart.
+# Retry after this delay; give up only after REPLACED_MAX_IN_A_ROW replaces in a row.
+REPLACED_RETRY_DELAY: Final = 60.0
+REPLACED_MAX_IN_A_ROW: Final = 5
 CONNECT_TIMEOUT: Final = 10.0
 HELLO_TIMEOUT: Final = 10.0
 DEFAULT_PING_INTERVAL: Final = 20.0

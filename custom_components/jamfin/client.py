@@ -37,6 +37,8 @@ from .const import (
     DIRECT_ART_TIMEOUT,
     HELLO_TIMEOUT,
     LOGGER,
+    REPLACED_MAX_IN_A_ROW,
+    REPLACED_RETRY_DELAY,
     RESOLVE_AFTER_FAILURES,
     SUPPORTED_API_VERSIONS,
 )
@@ -223,6 +225,7 @@ class JamfinClient:
 
     async def _run(self) -> None:
         failures = 0
+        replaced_in_a_row = 0
         while not self._stopping:
             self._wake.clear()
             self._connected_at = None
@@ -239,13 +242,30 @@ class JamfinClient:
                     self.on_auth_failed()
                 return
             except _ReplacedError:
-                self._finish_attempt()
-                self.replaced = True
-                LOGGER.warning(
-                    "%s: another connection with the same key replaced this one; not reconnecting",
-                    self.name,
+                stayed_up = (
+                    self._connected_at is not None
+                    and time.monotonic() - self._connected_at >= BACKOFF_RESET_AFTER
                 )
-                return
+                self._finish_attempt()
+                replaced_in_a_row = 1 if stayed_up else replaced_in_a_row + 1
+                if replaced_in_a_row >= REPLACED_MAX_IN_A_ROW:
+                    self.replaced = True
+                    LOGGER.warning(
+                        "%s: another connection with the same key keeps replacing this one; "
+                        "not reconnecting",
+                        self.name,
+                    )
+                    return
+                LOGGER.info(
+                    "%s: the TV closed this socket as replaced (4000); retrying in %.0f s",
+                    self.name,
+                    REPLACED_RETRY_DELAY,
+                )
+                self.stats["next_retry_in"] = REPLACED_RETRY_DELAY
+                with contextlib.suppress(TimeoutError):
+                    async with asyncio.timeout(REPLACED_RETRY_DELAY):
+                        await self._wake.wait()
+                continue
             except (
                 JamfinError,
                 aiohttp.ClientError,

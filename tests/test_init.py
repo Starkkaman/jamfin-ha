@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from unittest.mock import AsyncMock, patch
 
+import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.jamfin.const import (
@@ -146,14 +147,35 @@ async def test_setup_with_refused_key(
     assert [flow["context"]["source"] for flow in flows] == [SOURCE_REAUTH]
 
 
-async def test_replaced_socket_stops(
-    hass: HomeAssistant, init_integration: MockConfigEntry, fake_jamfin: FakeJamfin
+async def test_replaced_socket_retries(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    fake_jamfin: FakeJamfin,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Close 4000 (a newer socket uses the key): this client stops."""
+    """Close 4000 once: wait, then reconnect (it is usually our own race or an app restart)."""
+    monkeypatch.setattr("custom_components.jamfin.client.REPLACED_RETRY_DELAY", 0.05)
     await fake_jamfin.close_sockets(4000)
+    await wait_for(hass, lambda: fake_jamfin.ws_connects == 2)
+    await wait_for(hass, lambda: init_integration.runtime_data.connected)
+    assert not init_integration.runtime_data.replaced
+
+
+async def test_replaced_socket_stops_after_repeats(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    fake_jamfin: FakeJamfin,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Close 4000 five times in a row: another client really holds the key, so stop."""
+    monkeypatch.setattr("custom_components.jamfin.client.REPLACED_RETRY_DELAY", 0.01)
+    for n in range(1, 6):
+        await wait_for(hass, lambda n=n: fake_jamfin.ws_connects == n)
+        await wait_for(hass, lambda: init_integration.runtime_data.connected)
+        await fake_jamfin.close_sockets(4000)
     await wait_for(hass, lambda: init_integration.runtime_data.replaced)
     await asyncio.sleep(0.2)
-    assert fake_jamfin.ws_connects == 1
+    assert fake_jamfin.ws_connects == 5
     assert state_of(hass, PLAYER) == "off"
 
 
