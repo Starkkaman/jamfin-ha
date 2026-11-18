@@ -711,7 +711,7 @@ Pairing a client does not imply consent for every profile.
 
 | Event | When | HA mapping |
 |---|---|---|
-| `preshow` | The pre-show starts (before its first item) | event entity + device trigger |
+| `preshow` | The pre-show starts (before its first item). Both apps since Jamfin TV 0.7.0 (the beta only before) | event entity + device trigger |
 | `movienight` | A movie night vote opens | event entity + device trigger |
 | `movienight_winner` | The vote ends with a winner | event entity + device trigger |
 | `credits_started` | The position enters a `credits` segment, or the next-episode countdown starts without one | event entity + device trigger |
